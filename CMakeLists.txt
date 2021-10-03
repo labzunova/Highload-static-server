@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.16)
 project(Highload_static_server)
 
 #set(CMAKE_CXX_FLAGS "-Werror -Wpedantic -std=c++1z -pthread")

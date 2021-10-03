@@ -1,15 +1,15 @@
 FROM ubuntu:latest as executor
 
-USER labzunova
+USER root
 
-RUN apt-get update
-RUN apt-get -y install
-RUN make
-RUN g++
-RUN cmake
+RUN apt-get update && \
+    apt-get -y install --no-install-recommends \
+    make \
+    g++ \
+    cmake
 
 COPY . /app
-COPY . /var/www/html
+COPY . /var/www
 
 WORKDIR /app/build
 

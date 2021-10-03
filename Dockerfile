@@ -11,10 +11,10 @@ RUN apt-get update && \
 COPY . /app
 COPY . /var/www
 
-WORKDIR /app/build
-
 RUN cmake .. && cmake --build .
 
-CMD ./highload_server
+WORKDIR /app/build
 
 EXPOSE 80
+
+CMD ./Highload_static_server

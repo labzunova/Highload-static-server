@@ -11,9 +11,9 @@ RUN apt-get update && \
 COPY . /app
 COPY . /var/www
 
-RUN cmake .. && cmake --build .
-
 WORKDIR /app/build
+
+RUN cmake .. && cmake --build .
 
 EXPOSE 80
 

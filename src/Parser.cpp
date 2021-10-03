@@ -48,6 +48,7 @@ unordered_map<string, string> Parser::parse_body()
 }
 
 string Parser::parse_content_type() {
+    _isFileIndicated = true;
     if (_path.find(".html") > 0) {
         return "text/html";
     }
@@ -72,7 +73,8 @@ string Parser::parse_content_type() {
     if (_path.find(".swf") > 0) {
         return "application/x-shockwave-flash";
     }
-    return "";
+    _isFileIndicated = false;
+    return "text/html";
 }
 
 std::string Parser::DecodeUrl(std::string filePath) {
@@ -90,4 +92,8 @@ std::string Parser::DecodeUrl(std::string filePath) {
     }
 
     return resultPath;
+}
+
+bool Parser::isFileIndicated() {
+    return  _isFileIndicated;
 }

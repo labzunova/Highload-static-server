@@ -16,7 +16,7 @@ class ThreadPool {
 public:
     ThreadPool(int threadCount);
     ~ThreadPool();
-    void PushTask(int socket, std::string request);
+    void PushTask(int socket, std::string& request);
 private:
     std::vector<std::thread> _threads;
     std::queue<Request> _queue;

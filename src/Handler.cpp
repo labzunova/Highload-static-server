@@ -1,11 +1,11 @@
 #include "../include/Handler.h"
+#include <iostream>
 #include <ctime>
 #include <utility>
 #include <unistd.h>
+#include <fstream>
 
-Handler::Handler() {
-
-}
+const std::string root = "httptest/";
 
 void Handler::Handle(std::string request, int socket) {
     Parser parser(std::move(request));
@@ -23,7 +23,7 @@ void Handler::Handle(std::string request, int socket) {
         status = "403 Forbidden";
     }
 
-    int statusNum = CheckFile(path, &size, &body);
+    int statusNum = CheckFile(path, size, body, parser.isFileIndicated());
     if (statusNum == 404) {
         status = "404 Not Found";
     }
@@ -44,7 +44,26 @@ void Handler::Handle(std::string request, int socket) {
     close(socket);
 }
 
-int Handler::CheckFile(std::string path, int *size, string *body) {
+int Handler::CheckFile(std::string path, int &size, string &body, bool isFileIndicated) {
+    if (!isFileIndicated) {
+        path += "index.html";
+    }
+
+    std::ifstream file(root + path);
+    if (file) {
+        file.seekg(0, std::ios::end);
+        size_t len = file.tellg();
+        file.seekg(0);
+
+        body = std::string(len + 1, '\0');
+        file.read(&body[0], len);
+    } else {
+        if (isFileIndicated) {
+            return 403;
+        } else {
+            return 404;
+        }
+    }
     return 0;
 }
 

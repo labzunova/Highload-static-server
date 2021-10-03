@@ -6,10 +6,10 @@
 
 class Handler {
 public:
-    Handler();
+    Handler() = default;
     void Handle(std::string request, int socket);
 private:
-    int CheckFile(std::string path, int *size, std::string *body);
+    int CheckFile(std::string path, int &size, std::string &body, bool isFileIndicated);
     bool CheckRootEscaping(std::string path);
 };
 

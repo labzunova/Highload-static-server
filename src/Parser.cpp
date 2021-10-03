@@ -1,4 +1,3 @@
-#include <iostream>
 #include "../include/Parser.h"
 
 string Parser::parse_method()
@@ -12,14 +11,15 @@ string Parser::parse_path()
             path;
     temp = temp.erase(0, request.find(' ') + 1); // удаляем метод и пробел между методом и путем
     path = temp.substr( 0, temp.find(' ')); // теперь часть до пробела - путь
-    std::cout << "parsed path" << path << std::endl;
+
     if ((path.at(0) == '/') & (path.length() > 1))
         path = path.erase( 0, 1 );
     if (path.find('?') != std::string::npos) {
         path.erase(path.find('?'), path.length());
     }
+
     path = DecodeUrl(path);
-    std::cout << "parsed path" << path << std::endl;
+
     _path = path;
     return path;
 }
@@ -74,6 +74,6 @@ std::string Parser::DecodeUrl(std::string filePath) {
     return resultPath;
 }
 
-bool Parser::isFileIndicated() {
+bool Parser::isFileIndicated() const {
     return _isFileIndicated;
 }

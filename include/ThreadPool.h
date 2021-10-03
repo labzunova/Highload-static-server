@@ -15,15 +15,15 @@ struct Request {
 
 class ThreadPool {
 public:
-    ThreadPool(int threadCount);
+    ThreadPool(int threadCount, std::string doc_root);
     ~ThreadPool();
     void PushTask(int socket, std::basic_string<char> request);
 private:
     std::vector<std::thread> _threads;
     std::queue<Request> _queue;
     std::mutex _mx;
-    int _threadCount;
     std::condition_variable _takeTask;
+    int _threadCount;
     Handler _handler;
     void Run();
 };

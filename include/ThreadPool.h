@@ -6,6 +6,7 @@
 #include <queue>
 #include <mutex>
 #include "Handler.h"
+#include <condition_variable>
 
 struct Request {
     int socket;
@@ -16,12 +17,13 @@ class ThreadPool {
 public:
     ThreadPool(int threadCount);
     ~ThreadPool();
-    void PushTask(int socket, std::string& request);
+    void PushTask(int socket, std::basic_string<char> request);
 private:
     std::vector<std::thread> _threads;
     std::queue<Request> _queue;
     std::mutex _mx;
     int _threadCount;
+    std::condition_variable _takeTask;
     Handler _handler;
     void Run();
 };

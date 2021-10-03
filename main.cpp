@@ -21,11 +21,9 @@ int main() {
 
     sockaddr_in sin{}; //information about the socket
 //    sin.sin_addr.s_addr = htonl(INADDR_ANY); //since it's the server we accept any connection
-//    sin.sin_family = AF_INET; //family of the socket, for internet it's AF_INET
-//    sin.sin_port = htons(1234); // 23 for telnet etc, it's the port
     sin.sin_family = AF_INET;
     sin.sin_addr.s_addr = INADDR_ANY;
-    sin.sin_port = htons(8100);
+    sin.sin_port = htons(8200);
 
     int sizeof_sin = sizeof(sin); //size of the socket used to take the information from the client connected
     int socketFD = bind(sock, (sockaddr *)&sin, sizeof_sin);
@@ -45,7 +43,6 @@ int main() {
     std::cout << "Thread pool initialized" << std::endl;
 
     while(true) { // listen and serve
-//        int socket = accept(sock, (sockaddr *)&sin, (socklen_t*)&sizeof_sin); //first parameter : socket, second parameter : client information socket, third parameter : size of the information about the socket
         std::cout << "sizeof sin: " << sizeof_sin << std::endl;
         int socket = accept(sock, (struct sockaddr *)&sin, (socklen_t*)&sizeof_sin); //first parameter : socket, second parameter : client information socket, third parameter : size of the information about the socket
         std::cout << socket << std::endl;
@@ -55,8 +52,10 @@ int main() {
         }
         std::cout << "Connection ok" << std::endl;
 
-        char buffer[1000];
-        read(socket, buffer, 1000);
-        threadPool.PushTask(socket, reinterpret_cast<string &>(buffer));
+        char buffer[bufferSize];
+        read(socket, buffer, bufferSize);
+        std::cout << "buffer" << buffer << std::endl;
+        threadPool.PushTask(socket, std::string(buffer));
+        std::cout << "after pushTask" << std::endl;
     }
 }

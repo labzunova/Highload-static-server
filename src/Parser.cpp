@@ -1,13 +1,5 @@
+#include <iostream>
 #include "../include/Parser.h"
-//
-//Request Parser::ParseHTTP(string requestString) {
-//    Request request;
-//    int methodPos = requestString.find(' ')
-//    request.method = request.substr(0, methodPos);// первое слово до пробела в запросе - метод
-//    request.path = request.substr(methodPos + 1, );
-//
-//    return request;
-//}
 
 string Parser::parse_method()
 {
@@ -20,57 +12,45 @@ string Parser::parse_path()
             path;
     temp = temp.erase(0, request.find(' ') + 1); // удаляем метод и пробел между методом и путем
     path = temp.substr( 0, temp.find(' ')); // теперь часть до пробела - путь
-    if (path.at(0) == '/')
+    std::cout << "parsed path" << path << std::endl;
+    if ((path.at(0) == '/') & (path.length() > 1))
         path = path.erase( 0, 1 );
+    if (path.find('?') != std::string::npos) {
+        path.erase(path.find('?'), path.length());
+    }
     path = DecodeUrl(path);
+    std::cout << "parsed path" << path << std::endl;
     _path = path;
     return path;
 }
 
-unordered_map<string, string> Parser::parse_body()
-{
-    string request_ = request;
-    unordered_map<string, string> data;
-    string body = request_.erase( 0, request_.find( "\r\n\r\n" ) + 4 ); // стираем все что до body
-    body = body.substr( 0 , body.find( '\000' ) );
-    string key, value;
-    while ( body.length() != 0 )
-    {
-        int index = body.find( '=' );
-        key = body.substr( 0, index );
-        int endpos = body.find( '&' );
-        if( endpos == -1 ) endpos = body.length(); // если последний параметр
-        value = body.substr( index + 1, endpos - index - 1 );
-        data.insert(std::make_pair( key, value ));
-        body.erase( 0, endpos + 1 );
-    }
-    return data;
-}
-
 string Parser::parse_content_type() {
     _isFileIndicated = true;
-    if (_path.find(".html") > 0) {
+    if (_path.find(".html", 0) != std::string::npos) {
         return "text/html";
     }
-    if (_path.find(".css") > 0) {
+    if (_path.find(".txt", 0) != std::string::npos) {
+        return "text/txt";
+    }
+    if (_path.find(".css", 0) != std::string::npos) {
         return "text/css";
     }
-    if (_path.find(".js") > 0) {
-        return "text/js";
+    if (_path.find(".js", 0) != std::string::npos) {
+        return "text/javascript";
     }
-    if (_path.find(".jpg") > 0) {
-        return "image/jpg";
-    }
-    if (_path.find(".jpeg") > 0) {
+    if (_path.find(".jpg", 0) != std::string::npos) {
         return "image/jpeg";
     }
-    if (_path.find(".png") > 0) {
+    if (_path.find(".jpeg", 0) != std::string::npos) {
+        return "image/jpeg";
+    }
+    if (_path.find(".png", 0) != std::string::npos) {
         return "image/png";
     }
-    if (_path.find(".gif") > 0) {
+    if (_path.find(".gif", 0) != std::string::npos) {
         return "image/gif";
     }
-    if (_path.find(".swf") > 0) {
+    if (_path.find(".swf", 0) != std::string::npos) {
         return "application/x-shockwave-flash";
     }
     _isFileIndicated = false;
@@ -95,5 +75,5 @@ std::string Parser::DecodeUrl(std::string filePath) {
 }
 
 bool Parser::isFileIndicated() {
-    return  _isFileIndicated;
+    return _isFileIndicated;
 }

@@ -12,7 +12,6 @@ class Parser
 {
 public:
     Parser( string request_ ): request( std::move( request_ ) ) {};
-    unordered_map<string, string> parse_body();
     string parse_method();
     string parse_path();
     string parse_content_type();

@@ -1,5 +1,7 @@
 #include "../include/ThreadPool.h"
 
+#include <utility>
+
 #include "iostream"
 
 ThreadPool::ThreadPool(int threadCount) {
@@ -16,21 +18,35 @@ ThreadPool::~ThreadPool() {
     // todo удалить треды? да? нет?
 }
 
-void ThreadPool::PushTask(int socket, std::string& request) {
-    _mx.lock(); //todo
-    _queue.push(Request{socket, request});
-    _mx.unlock();
+void ThreadPool::PushTask(int socket, std::basic_string<char> request) {
+    std::cout << "gonna lock" << std::endl;
+    std::lock_guard<std::mutex> guard(_mx);
+//    _mx.lock(); //todo
+    std::cout << "pushTask lock" << std::endl;
+    _queue.push(Request{socket, std::move(request)});
+//    _mx.unlock();
+    _takeTask.notify_one();
+    std::cout << "pushTask unlock" << std::endl;
 }
 
 void ThreadPool::Run() {
     while(true) {
-        _mx.lock(); //todo
-        if (_queue.empty()) {
-            return;
+//        _mx.lock(); //todo
+        Request task;
+        {
+            std::cout << "run lock" << std::endl;
+            std::unique_lock<std::mutex> lock(_mx);
+
+            _takeTask.wait(lock, [this]{
+                return (!_queue.empty()) ;
+            });
+            task = _queue.front();
+            _queue.pop();
+            std::cout << "pop task done" << std::endl;
         }
-        Request task = _queue.front();
-        _queue.pop();
+
         _handler.Handle(task.request, task.socket);
-        _mx.unlock();
+//        _mx.unlock();
+        std::cout << "handle task done" << std::endl;
     }
 }

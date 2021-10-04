@@ -58,7 +58,7 @@ int main() {
     sockaddr_in sin{};
     sin.sin_family = AF_INET;
     sin.sin_addr.s_addr = INADDR_ANY;
-    sin.sin_port = htons(8100);
+    sin.sin_port = htons(8200);
 
     int sizeof_sin = sizeof(sin);
     int socketFD = bind(sock, (sockaddr *)&sin, sizeof_sin);

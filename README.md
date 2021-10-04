@@ -111,7 +111,7 @@ Percentage of the requests served within a certain time (ms)
 ```
 
 ### Nginx:  
-
+(worker_processes  4)
 - ab -n 10000 -c 8 127.0.0.1/httptest/wikipedia_russia.html
 ```asm
 This is ApacheBench, Version 2.3 <$Revision: 1843412 $>
@@ -140,31 +140,34 @@ Document Path:          /httptest/wikipedia_russia.html
 Document Length:        954825 bytes
 
 Concurrency Level:      10
-Time taken for tests:   8.208 seconds
+Time taken for tests:   5.605 seconds
 Complete requests:      10000
-Failed requests:        0
-Total transferred:      9549800000 bytes
-HTML transferred:       9548250000 bytes
-Requests per second:    1218.35 [#/sec] (mean)
-Time per request:       8.208 [ms] (mean)
-Time per request:       0.821 [ms] (mean, across all concurrent requests)
-Transfer rate:          1136234.10 [Kbytes/sec] received
+Failed requests:        2
+   (Connect: 0, Receive: 0, Length: 2, Exceptions: 0)
+Non-2xx responses:      2
+Total transferred:      9547890694 bytes
+HTML transferred:       9546340682 bytes
+Requests per second:    1784.21 [#/sec] (mean)
+Time per request:       5.605 [ms] (mean)
+Time per request:       0.560 [ms] (mean, across all concurrent requests)
+Transfer rate:          1663616.32 [Kbytes/sec] received
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
-Connect:        0    0   0.1      0       6
-Processing:     1    8   4.1      7      40
-Waiting:        1    4   2.0      3      34
-Total:          1    8   4.1      7      40
+Connect:        0    0   0.0      0       2
+Processing:     1    6   2.4      5      17
+Waiting:        1    3   1.5      2      11
+Total:          1    6   2.4      5      17
 
 Percentage of the requests served within a certain time (ms)
-  50%      7
-  66%      9
-  75%     10
-  80%     11
-  90%     14
-  95%     16
-  98%     20
-  99%     22
- 100%     40 (longest request)
+  50%      5
+  66%      6
+  75%      7
+  80%      7
+  90%      9
+  95%     10
+  98%     12
+  99%     13
+ 100%     17 (longest request)
+
 ```

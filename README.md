@@ -32,12 +32,13 @@ document_root /var/www/html
 
 Run tests:
 ```
-git clone https://github.com/init/http-test-suite.git
-cd http-test-suite
-
-docker build -t server-httpd https://github.com/labzunova/Highload-static-server.git
-docker run -p 80:80 -v /etc/httpd.conf:/etc/httpd.conf:ro -v /var/www/html:/var/www/html:ro --name server-httpd -t server-httpd
-
+git clone git@github.com:labzunova/Highload-static-server.git
+cd Highload-static-server/`
+sudo docker build -t server-httpd .
+docker run -p 8200 -v /etc/httpd.conf:/etc/httpd.conf:ro -v /var/www/html:/var/www/html:ro --name server-httpd -t server-httpd
+```
+Run tests:
+```
 ./httptest.py
 ```
 

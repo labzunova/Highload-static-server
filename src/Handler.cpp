@@ -4,26 +4,36 @@
 #include <utility>
 #include <unistd.h>
 #include <fstream>
+#include <map>
 
-void Handler::Handle(std::string request, int socket) {
-    Parser parser(std::move(request));
+int bufferSize = 10000;
+
+void Handler::Handle(int socket) {
+    char request[bufferSize];
+    read(socket, request, bufferSize);
+
+    Parser parser((std::string(request)));
     std::string method = parser.parse_method();
     std::string path = parser.parse_path();
 
     std::string headers, status, body;
     int size;
     headers.append("\r\nServer: highload_static_server");
+
+    char buf[1000];
     time_t now = time(nullptr);
-    headers.append("\r\nDate: " + std::string(ctime(&now)));
+    struct tm tm = *gmtime(&now);
+    strftime(buf, sizeof buf, "%a, %d %b %Y %H:%M:%S %Z", &tm);
+    headers.append("\r\nDate: " + std::string(buf));
     headers.append("Connection: close");
 
     if (CheckRootEscaping(path)) {
         status = "403 Forbidden";
     }
 
-    std::string content_type = parser.parse_content_type();
+    std::string content_type = "html";
 
-    int statusNum = CheckFile(path, size, body, parser.isFileIndicated());
+    int statusNum = CheckFile(path, size, body, true);
     if (statusNum == 404) {
         status = "404 Not Found";
     }
@@ -35,7 +45,6 @@ void Handler::Handle(std::string request, int socket) {
             status = "200 OK";
             headers.append("\r\nContent-Type: " + content_type);
             headers.append("\r\nContent-Length: " + std::to_string(size));
-            std::cout << "content-length" << std::to_string(size);
         }
         if (method == "HEAD") {
             body = "";
@@ -43,7 +52,6 @@ void Handler::Handle(std::string request, int socket) {
     } else {
         status = "405 Method Not Allowed";
     }
-
 
     std::string response = "HTTP/1.1 " + status + headers + "\r\n\r\n" + body;
     write(socket, response.c_str(), response.length());

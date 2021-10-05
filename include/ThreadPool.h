@@ -8,19 +8,14 @@
 #include "Handler.h"
 #include <condition_variable>
 
-struct Request {
-    int socket;
-    std::string request;
-};
-
 class ThreadPool {
 public:
     ThreadPool(int threadCount, std::string doc_root);
     ~ThreadPool();
-    void PushTask(int socket, std::basic_string<char> request);
+    void PushTask(int socket);
 private:
     std::vector<std::thread> _threads;
-    std::queue<Request> _queue;
+    std::queue<int> _queue;
     std::mutex _mx;
     std::condition_variable _takeTask;
     int _threadCount;

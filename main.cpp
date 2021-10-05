@@ -8,8 +8,6 @@
 #include <netinet/in.h>
 #include <fstream>
 
-int bufferSize = 10000;
-
 //const std::string root = "/home/labzunova/Highload-static-server/";
 
 struct Config {
@@ -78,15 +76,11 @@ int main() {
 
     while(true) { // listen and serve
         int socket = accept(sock, (struct sockaddr *)&sin, (socklen_t*)&sizeof_sin);
-        std::cout << socket << std::endl;
         if (socket < 0) {
             std::cout << "Accept() error" << std::endl;
             return -1;
         }
-        std::cout << "Connection ok" << std::endl;
 
-        char buffer[bufferSize];
-        read(socket, buffer, bufferSize);
-        threadPool.PushTask(socket, std::string(buffer));
+        threadPool.PushTask(socket);
     }
 }

@@ -31,9 +31,9 @@ void Handler::Handle(int socket) {
         status = "403 Forbidden";
     }
 
-    std::string content_type = "html";
+    std::string content_type = parser.parse_content_type();
 
-    int statusNum = CheckFile(path, size, body, true);
+    int statusNum = CheckFile(path, size, body, parser.isFileIndicated());
     if (statusNum == 404) {
         status = "404 Not Found";
     }
